@@ -1,0 +1,60 @@
+Ran with propanenitrile, N2, acetylene, acrylonitrile, hexane, and acetonitrile
+	FEP energy results in lammps/propanenitrile_100_0_0__ [0..100] .log, etc
+
+Running analyze_fep.py on all results...Works! Maybe adjust skip count. 
+
+Made fep_solid.py to test solid free energy of removal. 
+	Created lammps/Makefile0 to run with parallel make: cd lammps; make -f Makefile0 -j 30
+	test_molecule_name+'_solid__'+str(int(step))
+Made fep_gas.py for comparison between vacuum and methane gas (ie non-ideality)
+	make -f Makefile_gas -j 30
+	test_molecule_name+'_gas__'+str(int(step))
+	
+	then compare against atmosphere (95% N2, 5% CH4)
+	make -f Makefile_atm -j 30
+	test_molecule_name+'_atm__'+str(int(step))
+
+Doing separate solid2 run for acrylonitrile, to test more ordered "shingle" conformation. Only in previous file. 
+Same for propanenitrile. 
+Then acetylene, hcn, acetonitrile. 
+
+Take out hexane - not relevant.
+Then paper is N2, propanenitrile, acetylene, hcn, acetonitrile, acrylonitrile. 
+atm and sea were missing HCN: make -f Makefile_atm -j 15, make -f Makefile_sea -j 15
+atm was missing N2: running parallel, no Makefile
+
+Final data:
+	Vacuum to atmosphere: (fep_gas.py) use more sig figs?
+		propanenitrile	-0.035	-0.035	0.033
+		acrylonitrile	-0.043	-0.043	0.042
+		acetylene		-0.016	-0.016	0.016
+		hcn				-0.017	-0.017	0.016
+		acetonitrile	-0.025	-0.025	0.024
+		N2 				-0.014	-0.014	0.014
+	Vacuum to sea: (fep_old.py, fep_liquid.py)
+		propanenitrile	-3.171	-3.190	3.206
+		acrylonitrile	-5.891	-5.673	4.742
+		acetylene		-2.586	-2.435	1.781
+		hcn				-2.836	-2.677	2.228
+		acetonitrile	-3.933	-3.743	3.150
+		N2				-4.632	-4.497	4.066
+	Vacuum to solid: (fep_solid.py)
+		propanenitrile	-14.218	-13.931	13.075
+		acrylonitrile	-14.361	-14.119	13.360
+		acetylene		-4.742	-4.551	3.993
+		hcn				-10.011	-9.693	8.721
+		acetonitrile	-12.425	-12.246	11.543
+
+saturation soubility = equal chemical potentials, equivalently equal fugacities
+or, estimate activity coefficient
+activity coefficient = fugacity ratio, real vs infinite dilution  http://pubs.acs.org/doi/pdf/10.1021/ie100088c
+
+Cite:
+	http://guruz.hu/~dezo/Citations/Papers_that_cite_me/Eslami_MM_inpress.pdf		Widom insertion
+	http://static.msi.umn.edu/rreports/2006/54.pdf (not a journal article)
+	http://pubs.acs.org/doi/full/10.1021/ct900214y									TI
+	http://scitation.aip.org/content/aip/journal/jcp/116/6/10.1063/1.1431588
+
+GCMC:
+	http://scitation.aip.org/content/aip/journal/jcp/139/24/10.1063/1.4848697
+	100 MD, 10^5 MC, repeat
